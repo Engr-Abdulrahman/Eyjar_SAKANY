@@ -193,7 +193,7 @@
 
     .app-content { padding: 16px; }
 
-    /* بطاقة ترحيب */
+    /* بطاقة ترحيب — الاسم في سطر منفصل */
     .welcome-card {
         background: linear-gradient(135deg, #1e3a2f, #1a1f2e);
         border-radius: 16px;
@@ -206,11 +206,19 @@
         gap: 14px;
         flex-wrap: wrap;
     }
+    .welcome-card .greet-wrap { flex: 1; min-width: 0; }
+    .welcome-card .greet-hello {
+        font-size: 14px;
+        color: #94a3b8;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
     .welcome-card .greet-name {
         font-size: 20px;
         font-weight: 800;
         color: #e2e8f0;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        word-break: break-word;
     }
     .welcome-card .greet-unit {
         font-size: 13px;
@@ -231,22 +239,25 @@
     .status-pill.pending { background: #78350f; color: #fbbf24; border: 1px solid #f59e0b; }
     .status-pill.late { background: #7f1d1d; color: #f87171; border: 1px solid #ef4444; }
 
-    /* ملخص مالي */
+    /* ملخص مالي — 3 صفوف تحت بعضها */
     .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         margin-bottom: 14px;
     }
     .summary-card {
         background: linear-gradient(145deg, #1a1f2e, #0f121f);
         border-radius: 14px;
-        padding: 18px 14px;
-        text-align: center;
+        padding: 16px 18px;
         position: relative;
         overflow: hidden;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
     }
     .summary-card::before {
         content: '';
@@ -258,10 +269,15 @@
     .summary-card.s-paid::before { background: linear-gradient(180deg, #4ade80, #22c55e); }
     .summary-card.s-remaining::before { background: linear-gradient(180deg, #f87171, #ef4444); }
     .summary-card .sum-label {
-        font-size: 12px;
+        font-size: 13px;
         color: #94a3b8;
         font-weight: 700;
-        margin-bottom: 8px;
+    }
+    .summary-card .sum-right {
+        text-align: left;
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
     }
     .summary-card .sum-value {
         font-size: 22px;
@@ -271,7 +287,7 @@
     .summary-card .sum-value.blue { color: #60a5fa; }
     .summary-card .sum-value.green { color: #4ade80; }
     .summary-card .sum-value.red { color: #f87171; }
-    .summary-card .sum-sub { font-size: 10px; color: #64748b; margin-top: 4px; }
+    .summary-card .sum-sub { font-size: 11px; color: #64748b; font-weight: 700; }
 
     /* أقسام */
     .section-card {
@@ -378,7 +394,7 @@
         font-weight: 800;
     }
 
-    /* سجل الدفعات */
+    /* سجل الدفعات — النصف العلوي فقط */
     .payment-row {
         background: #0f121f;
         border-radius: 10px;
@@ -412,28 +428,6 @@
         margin-top: 4px;
         word-break: break-word;
     }
-    .payment-extra {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-        margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px dashed #2d3348;
-    }
-    .payment-extra .pe-item {
-        background: #141824;
-        border-radius: 6px;
-        padding: 6px 8px;
-        text-align: center;
-    }
-    .payment-extra .pe-label {
-        font-size: 9.5px;
-        color: #94a3b8;
-        font-weight: 700;
-        display: block;
-        margin-bottom: 2px;
-    }
-    .payment-extra .pe-val { font-size: 12px; font-weight: 800; color: #e2e8f0; }
 
     .empty-msg {
         text-align: center;
@@ -454,16 +448,13 @@
     }
 
     @media (max-width: 640px) {
-        .summary-grid { gap: 8px; }
-        .summary-card { padding: 14px 8px; }
-        .summary-card .sum-value { font-size: 17px; }
-        .summary-card .sum-label { font-size: 11px; }
         .info-grid { grid-template-columns: 1fr; }
         .app-content { padding: 12px; }
         .welcome-card { padding: 16px; }
         .welcome-card .greet-name { font-size: 17px; }
         .login-card { padding: 26px 20px 22px; }
-        .payment-extra { grid-template-columns: repeat(2, 1fr); }
+        .summary-card { padding: 14px 14px; }
+        .summary-card .sum-value { font-size: 19px; }
     }
 </style>
 </head>
@@ -519,7 +510,8 @@
 
     <div class="app-content">
         <div class="welcome-card">
-            <div>
+            <div class="greet-wrap">
+                <div class="greet-hello">👋 مرحبًا،</div>
                 <div class="greet-name" id="greetName">—</div>
                 <div class="greet-unit" id="greetUnit">—</div>
             </div>
@@ -591,9 +583,7 @@ let tenants = [
     ["ع2", "ع2 / 3", "مجيب علي ماهيسار", 550, "paid", "2026-12-10", 0, "2026-01-10", 12, 6600, 6600]
 ];
 
-/* جدول الدفعات — نفس حقول recentPaymentsTable الأصلي:
-   { id, date, tenantName, apartment, amount, type, description,
-     monthlyRent, overdueAfter, tillDate } */
+/* جدول الدفعات — نفس حقول recentPaymentsTable الأصلي */
 let recentPaymentsTable = [
     { id: 1,  date: "2026-07-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر يوليو 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-08-01" },
     { id: 2,  date: "2026-08-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر أغسطس 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-09-01" },
@@ -682,8 +672,8 @@ function showTenantPage(t) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('tenantApp').classList.add('show');
 
-    /* ترحيب */
-    document.getElementById('greetName').textContent = '👋 مرحبًا، ' + t.tenant;
+    /* ترحيب — الاسم في سطر منفصل */
+    document.getElementById('greetName').textContent = t.tenant;
     document.getElementById('greetUnit').textContent = '🏠 ' + t.building + ' — وحدة ' + t.unit;
 
     /* حالة الحساب */
@@ -696,27 +686,33 @@ function showTenantPage(t) {
     document.getElementById('greetStatus').innerHTML =
         `<span class="status-pill ${st.cls}">${st.text}</span>`;
 
-    /* ملخص مالي */
+    /* ملخص مالي — 3 صفوف تحت بعضها */
     const remaining = Math.max(t.amountDue - t.amountPaid, 0);
     document.getElementById('summaryGrid').innerHTML = `
         <div class="summary-card s-due">
-            <div class="sum-label">إجمالي المستحق</div>
-            <div class="sum-value blue">${t.amountDue.toLocaleString()}</div>
-            <div class="sum-sub">ريال</div>
+            <div class="sum-label">💰 إجمالي المستحق</div>
+            <div class="sum-right">
+                <span class="sum-value blue">${t.amountDue.toLocaleString()}</span>
+                <span class="sum-sub">ر.س</span>
+            </div>
         </div>
         <div class="summary-card s-paid">
-            <div class="sum-label">إجمالي المسدد</div>
-            <div class="sum-value green">${t.amountPaid.toLocaleString()}</div>
-            <div class="sum-sub">ريال</div>
+            <div class="sum-label">✅ إجمالي المسدد</div>
+            <div class="sum-right">
+                <span class="sum-value green">${t.amountPaid.toLocaleString()}</span>
+                <span class="sum-sub">ر.س</span>
+            </div>
         </div>
         <div class="summary-card s-remaining">
-            <div class="sum-label">المتبقي عليه</div>
-            <div class="sum-value red">${remaining.toLocaleString()}</div>
-            <div class="sum-sub">ريال</div>
+            <div class="sum-label">⚠️ المتبقي عليه</div>
+            <div class="sum-right">
+                <span class="sum-value red">${remaining.toLocaleString()}</span>
+                <span class="sum-sub">ر.س</span>
+            </div>
         </div>
     `;
 
-    /* بيانات الإيجار — كل الحقول من جدول tenants فقط */
+    /* بيانات الإيجار */
     document.getElementById('rentInfo').innerHTML = `
         <div class="info-item">
             <span class="info-label">🏢 العمارة</span>
@@ -783,7 +779,7 @@ function showTenantPage(t) {
         `;
     }
 
-    /* سجل الدفعات — من recentPaymentsTable (ربط بالاسم الكامل) */
+    /* سجل الدفعات — النصف العلوي فقط (المبلغ + النوع + التاريخ + الوصف) */
     const pays = recentPaymentsTable
         .filter(tr => tr.tenantName === t.tenant)
         .sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -792,11 +788,7 @@ function showTenantPage(t) {
     if (pays.length === 0) {
         payBox.innerHTML = `<div class="empty-msg">📭 لا توجد دفعات مسجلة حتى الآن</div>`;
     } else {
-        payBox.innerHTML = pays.map(tr => {
-            const afterCls = (tr.overdueAfter || 0) > 0 ? 'red'
-                          : (tr.overdueAfter || 0) < 0 ? 'green'
-                          : '';
-            return `
+        payBox.innerHTML = pays.map(tr => `
             <div class="payment-row">
                 <div class="pr-top">
                     <div class="pr-amount">💰 ${tr.amount.toLocaleString()} ر.س</div>
@@ -804,23 +796,8 @@ function showTenantPage(t) {
                 </div>
                 <div class="pr-date">📅 ${escapeHtml(tr.date)}</div>
                 <div class="pr-desc">📝 ${escapeHtml(tr.description)}</div>
-                <div class="payment-extra">
-                    <div class="pe-item">
-                        <span class="pe-label">🏢 الإيجار الشهري</span>
-                        <span class="pe-val">${(tr.monthlyRent || 0).toLocaleString()} ر.س</span>
-                    </div>
-                    <div class="pe-item">
-                        <span class="pe-label">📉 المتبقي بعدها</span>
-                        <span class="pe-val ${afterCls}">${(tr.overdueAfter || 0).toLocaleString()} ر.س</span>
-                    </div>
-                    <div class="pe-item">
-                        <span class="pe-label">📅 حتى تاريخ</span>
-                        <span class="pe-val">${escapeHtml(tr.tillDate || '—')}</span>
-                    </div>
-                </div>
             </div>
-            `;
-        }).join('');
+        `).join('');
     }
 }
 
