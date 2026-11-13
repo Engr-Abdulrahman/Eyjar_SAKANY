@@ -193,7 +193,7 @@
 
     .app-content { padding: 16px; }
 
-    /* بطاقة ترحيب — الاسم في سطر منفصل */
+    /* بطاقة ترحيب */
     .welcome-card {
         background: linear-gradient(135deg, #1e3a2f, #1a1f2e);
         border-radius: 16px;
@@ -239,7 +239,7 @@
     .status-pill.pending { background: #78350f; color: #fbbf24; border: 1px solid #f59e0b; }
     .status-pill.late { background: #7f1d1d; color: #f87171; border: 1px solid #ef4444; }
 
-    /* ملخص مالي — 3 صفوف تحت بعضها */
+    /* ملخص مالي */
     .summary-grid {
         display: flex;
         flex-direction: column;
@@ -289,14 +289,14 @@
     .summary-card .sum-value.red { color: #f87171; }
     .summary-card .sum-sub { font-size: 11px; color: #64748b; font-weight: 700; }
 
-    /* أقسام */
+    /* أقسام — الصندوق الخارجي شفاف (بدون بلاطة خلف المحتوى) */
     .section-card {
-        background: #141824;
-        border-radius: 16px;
+        background: transparent;
+        border-radius: 0;
         margin-bottom: 14px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+        overflow: visible;
+        border: none;
+        box-shadow: none;
     }
     .section-head {
         display: flex;
@@ -307,6 +307,9 @@
         cursor: pointer;
         user-select: none;
         gap: 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
     }
     .section-head .sec-title {
         font-size: 15px;
@@ -324,8 +327,8 @@
     .section-head .sec-arrow.open { transform: rotate(180deg); }
     .section-body {
         display: none;
-        padding: 16px 18px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 16px 4px 0 4px;
+        border-top: none;
     }
     .section-body.open { display: block; }
 
@@ -394,7 +397,7 @@
         font-weight: 800;
     }
 
-    /* سجل الدفعات — النصف العلوي فقط */
+    /* سجل الدفعات */
     .payment-row {
         background: #0f121f;
         border-radius: 10px;
@@ -562,9 +565,6 @@
    قاعدة البيانات — مطابقة تمامًا لهيكل البرنامج القديم
    ================================================================ */
 
-/* جدول المستأجرين — نفس ترتيب الحقول الأصلي:
-   [ building, unit, tenantName, rent, status, dueDate, overdueAmount,
-     startDate, requiredMonths, amountDue, amountPaid ] */
 let tenants = [
     ["ع.2", "ع2 / 1", "عبدالرحمن علي محمد قاسم", 1080, "paid", "2026-07-01", 0, "2025-07-01", 12, 12960, 13500],
     ["ع.2", "ع2 / 2", "محمد علي محمد قاسم", 1400, "paid", "2026-06-14", 0, "2025-03-14", 15, 18750, 21000],
@@ -583,7 +583,6 @@ let tenants = [
     ["ع2", "ع2 / 3", "مجيب علي ماهيسار", 550, "paid", "2026-12-10", 0, "2026-01-10", 12, 6600, 6600]
 ];
 
-/* جدول الدفعات — نفس حقول recentPaymentsTable الأصلي */
 let recentPaymentsTable = [
     { id: 1,  date: "2026-07-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر يوليو 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-08-01" },
     { id: 2,  date: "2026-08-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر أغسطس 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-09-01" },
@@ -605,7 +604,6 @@ let recentPaymentsTable = [
     { id: 18, date: "2026-06-01", tenantName: "عبدالرحمن امين عبدالله الحميري", apartment: "ع2 / 6", amount: 1667, type: "تحويل بنكي", description: "دفعة إيجار يونيو 2026", monthlyRent: 1667, overdueAfter: 168, tillDate: "2026-07-01" }
 ];
 
-/* تحويل جدول tenants إلى كائنات (بنفس أسماء الحقول الأصلية) */
 let tenantsObjects = tenants.map((t, i) => ({
     id: i,
     building: t[0],
@@ -623,9 +621,6 @@ let tenantsObjects = tenants.map((t, i) => ({
 
 let currentTenant = null;
 
-/* ================================================================
-   تعبئة قائمة الدخول
-   ================================================================ */
 function populateLoginDropdown() {
     const sel = document.getElementById('loginUser');
     tenantsObjects
@@ -639,9 +634,6 @@ function populateLoginDropdown() {
         });
 }
 
-/* ================================================================
-   تسجيل الدخول / الخروج
-   ================================================================ */
 function handleLogin(e) {
     e.preventDefault();
     const user = document.getElementById('loginUser').value;
@@ -665,18 +657,13 @@ function handleLogout() {
     document.getElementById('loginError').classList.remove('show');
 }
 
-/* ================================================================
-   عرض صفحة المستأجر
-   ================================================================ */
 function showTenantPage(t) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('tenantApp').classList.add('show');
 
-    /* ترحيب — الاسم في سطر منفصل */
     document.getElementById('greetName').textContent = t.tenant;
     document.getElementById('greetUnit').textContent = '🏠 ' + t.building + ' — وحدة ' + t.unit;
 
-    /* حالة الحساب */
     const statusMap = {
         paid:    { text: '✅ منتظم',        cls: 'paid' },
         pending: { text: '⏳ قيد الانتظار', cls: 'pending' },
@@ -686,7 +673,6 @@ function showTenantPage(t) {
     document.getElementById('greetStatus').innerHTML =
         `<span class="status-pill ${st.cls}">${st.text}</span>`;
 
-    /* ملخص مالي — 3 صفوف تحت بعضها */
     const remaining = Math.max(t.amountDue - t.amountPaid, 0);
     document.getElementById('summaryGrid').innerHTML = `
         <div class="summary-card s-due">
@@ -712,7 +698,6 @@ function showTenantPage(t) {
         </div>
     `;
 
-    /* بيانات الإيجار */
     document.getElementById('rentInfo').innerHTML = `
         <div class="info-item">
             <span class="info-label">🏢 العمارة</span>
@@ -748,7 +733,6 @@ function showTenantPage(t) {
         </div>
     `;
 
-    /* المستحقات / المتأخرات */
     const ov = t.overdueAmount;
     const ovBox = document.getElementById('overdueContent');
     if (ov > 0) {
@@ -779,7 +763,6 @@ function showTenantPage(t) {
         `;
     }
 
-    /* سجل الدفعات — النصف العلوي فقط (المبلغ + النوع + التاريخ + الوصف) */
     const pays = recentPaymentsTable
         .filter(tr => tr.tenantName === t.tenant)
         .sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -801,9 +784,6 @@ function showTenantPage(t) {
     }
 }
 
-/* ================================================================
-   أدوات
-   ================================================================ */
 function toggleSec(id) {
     const body = document.getElementById(id);
     const arrow = document.getElementById('arrow-' + id);
@@ -817,9 +797,6 @@ function escapeHtml(str) {
     return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
 }
 
-/* ================================================================
-   التهيئة
-   ================================================================ */
 window.addEventListener('DOMContentLoaded', populateLoginDropdown);
 </script>
 </body>
