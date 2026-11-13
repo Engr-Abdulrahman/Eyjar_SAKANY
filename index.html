@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>بوابة المستأجرين - سكني</title>
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 350 400'%3E%3Crect width='350' height='400' fill='%230a0e1a' rx='30'/%3E%3Cpath d='M70 260 L118 230 L118 340 L70 340 Z' fill='%23ffffff'/%3E%3Cpath d='M132 90 L170 66 L208 90 L208 130 L182 114 L182 340 L154 340 L154 204 L132 218 Z' fill='%23ffffff'/%3E%3Cpath d='M214 160 L262 190 L262 246 L236 228 L236 340 L214 340 Z' fill='%23ffffff'/%3E%3Cpath d='M274 248 L292 266 L292 340 L274 340 Z' fill='%23ffffff'/%3E%3C/svg%3E">
+
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+        font-family: 'IBM Plex Sans Arabic', sans-serif;
+        font-weight: 500;
+        background: #0a0e1a;
+        direction: rtl;
+        color: #e2e8f0;
+        line-height: 1.4;
+        min-height: 100vh;
+    }
+
+    /* ===== شاشة الدخول ===== */
+    .login-screen {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: radial-gradient(circle at 50% 0%, #141824 0%, #05080f 70%);
+    }
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        background: linear-gradient(145deg, #1a1f2e, #0f121f);
+        border-radius: 20px;
+        padding: 32px 26px 28px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(212, 163, 115, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    .login-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 4px;
+        background: linear-gradient(90deg, #2ecc71, #8b5cf6, #fbbf24);
+    }
+    .login-logo {
+        width: 110px;
+        height: auto;
+        display: block;
+        margin: 0 auto 16px;
+    }
+    .login-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #4ade80, #d4a373, #fbbf24);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 4px;
+    }
+    .login-sub {
+        text-align: center;
+        font-size: 12px;
+        color: #94a3b8;
+        margin-bottom: 26px;
+    }
+    .login-field { margin-bottom: 16px; }
+    .login-field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: #a0aec0;
+        margin-bottom: 6px;
+    }
+    .login-field select,
+    .login-field input {
+        width: 100%;
+        padding: 12px 14px;
+        background: #0f121f;
+        border: 1.5px solid #2d3348;
+        border-radius: 10px;
+        color: #e2e8f0;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        outline: none;
+        transition: all 0.2s;
+    }
+    .login-field select:focus,
+    .login-field input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+    .login-field select option { background: #0f121f; color: #e2e8f0; }
+    .login-btn {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 14px rgba(34, 197, 94, 0.25);
+        margin-top: 6px;
+    }
+    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34, 197, 94, 0.35); }
+    .login-btn:active { transform: scale(0.98); }
+    .login-error {
+        display: none;
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid #ef4444;
+        color: #fca5a5;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        margin-top: 12px;
+    }
+    .login-error.show { display: block; }
+    .login-hint {
+        text-align: center;
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid #2d3348;
+    }
+
+    /* ===== صفحة المستأجر ===== */
+    .tenant-app {
+        display: none;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 0 30px;
+    }
+    .tenant-app.show { display: block; }
+
+    .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: #0f121f;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        border-bottom: 1px solid rgba(212, 163, 115, 0.15);
+    }
+    .app-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 3px;
+        background: linear-gradient(90deg, #2ecc71, #8b5cf6, #fbbf24);
+    }
+    .app-header .brand { display: flex; align-items: center; gap: 10px; }
+    .app-header .brand svg { width: 30px; height: auto; }
+    .app-header .brand .brand-text {
+        font-size: 15px;
+        font-weight: 800;
+        color: #fbbf24;
+    }
+    .logout-btn {
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .logout-btn:hover { background: rgba(239, 68, 68, 0.28); }
+
+    .app-content { padding: 16px; }
+
+    /* بطاقة ترحيب */
+    .welcome-card {
+        background: linear-gradient(135deg, #1e3a2f, #1a1f2e);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 14px;
+        border: 1px solid rgba(74, 222, 128, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+    .welcome-card .greet-name {
+        font-size: 20px;
+        font-weight: 800;
+        color: #e2e8f0;
+        margin-bottom: 4px;
+    }
+    .welcome-card .greet-unit {
+        font-size: 13px;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+    .status-pill {
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+    .status-pill.paid { background: #064e3b; color: #4ade80; border: 1px solid #22c55e; }
+    .status-pill.pending { background: #78350f; color: #fbbf24; border: 1px solid #f59e0b; }
+    .status-pill.late { background: #7f1d1d; color: #f87171; border: 1px solid #ef4444; }
+
+    /* ملخص مالي */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .summary-card {
+        background: linear-gradient(145deg, #1a1f2e, #0f121f);
+        border-radius: 14px;
+        padding: 18px 14px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .summary-card::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 4px; height: 100%;
+    }
+    .summary-card.s-due::before { background: linear-gradient(180deg, #60a5fa, #3b82f6); }
+    .summary-card.s-paid::before { background: linear-gradient(180deg, #4ade80, #22c55e); }
+    .summary-card.s-remaining::before { background: linear-gradient(180deg, #f87171, #ef4444); }
+    .summary-card .sum-label {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .summary-card .sum-value {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    .summary-card .sum-value.blue { color: #60a5fa; }
+    .summary-card .sum-value.green { color: #4ade80; }
+    .summary-card .sum-value.red { color: #f87171; }
+    .summary-card .sum-sub { font-size: 10px; color: #64748b; margin-top: 4px; }
+
+    /* أقسام */
+    .section-card {
+        background: #141824;
+        border-radius: 16px;
+        margin-bottom: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    }
+    .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #1a1f2e, #0f121f);
+        cursor: pointer;
+        user-select: none;
+        gap: 10px;
+    }
+    .section-head .sec-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: #fbbf24;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .section-head .sec-arrow {
+        font-size: 13px;
+        color: #94a3b8;
+        transition: transform 0.3s;
+    }
+    .section-head .sec-arrow.open { transform: rotate(180deg); }
+    .section-body {
+        display: none;
+        padding: 16px 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .section-body.open { display: block; }
+
+    /* بيانات الإيجار */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .info-item {
+        background: #0f121f;
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+    .info-item .info-label {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .info-item .info-value {
+        font-size: 15px;
+        font-weight: 800;
+        color: #e2e8f0;
+    }
+    .info-item .info-value.gold { color: #fbbf24; }
+    .info-item .info-value.blue { color: #60a5fa; }
+    .info-item .info-value.green { color: #4ade80; }
+    .info-item .info-value.red { color: #f87171; }
+
+    /* المتأخرات */
+    .overdue-box {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1.5px solid rgba(239, 68, 68, 0.35);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .overdue-box.clear {
+        background: rgba(34, 197, 94, 0.08);
+        border-color: rgba(34, 197, 94, 0.35);
+    }
+    .overdue-box .ov-left .ov-label {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    .overdue-box .ov-left .ov-value { font-size: 24px; font-weight: 800; }
+    .overdue-box .ov-value.red { color: #f87171; }
+    .overdue-box .ov-value.green { color: #4ade80; }
+    .overdue-box .ov-right {
+        font-size: 12px;
+        font-weight: 700;
+        color: #cbd5e1;
+        text-align: left;
+    }
+    .overdue-box .ov-right .ov-date {
+        font-size: 14px;
+        color: #fbbf24;
+        font-weight: 800;
+    }
+
+    /* سجل الدفعات */
+    .payment-row {
+        background: #0f121f;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        border-right: 3px solid #3b82f6;
+    }
+    .payment-row:last-child { margin-bottom: 0; }
+    .payment-row .pr-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+    .payment-row .pr-amount { font-size: 16px; font-weight: 800; color: #4ade80; }
+    .payment-row .pr-type {
+        font-size: 11px;
+        font-weight: 700;
+        color: #60a5fa;
+        background: rgba(59, 130, 246, 0.15);
+        padding: 3px 10px;
+        border-radius: 999px;
+    }
+    .payment-row .pr-date { font-size: 12px; color: #94a3b8; font-weight: 600; }
+    .payment-row .pr-desc {
+        font-size: 12px;
+        color: #cbd5e1;
+        line-height: 1.5;
+        margin-top: 4px;
+        word-break: break-word;
+    }
+    .payment-extra {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed #2d3348;
+    }
+    .payment-extra .pe-item {
+        background: #141824;
+        border-radius: 6px;
+        padding: 6px 8px;
+        text-align: center;
+    }
+    .payment-extra .pe-label {
+        font-size: 9.5px;
+        color: #94a3b8;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 2px;
+    }
+    .payment-extra .pe-val { font-size: 12px; font-weight: 800; color: #e2e8f0; }
+
+    .empty-msg {
+        text-align: center;
+        padding: 22px;
+        color: #64748b;
+        font-weight: 700;
+        font-size: 13px;
+        background: #0f121f;
+        border-radius: 10px;
+    }
+
+    .foot-note {
+        text-align: center;
+        font-size: 11px;
+        color: #64748b;
+        padding: 16px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+        .summary-grid { gap: 8px; }
+        .summary-card { padding: 14px 8px; }
+        .summary-card .sum-value { font-size: 17px; }
+        .summary-card .sum-label { font-size: 11px; }
+        .info-grid { grid-template-columns: 1fr; }
+        .app-content { padding: 12px; }
+        .welcome-card { padding: 16px; }
+        .welcome-card .greet-name { font-size: 17px; }
+        .login-card { padding: 26px 20px 22px; }
+        .payment-extra { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+</head>
+<body>
+
+<!-- ===== شاشة الدخول ===== -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <svg class="login-logo" viewBox="60 60 250 300" xmlns="http://www.w3.org/2000/svg">
+            <path d="M70 260 L118 230 L118 340 L70 340 Z" fill="#ffffff" />
+            <path d="M132 90 L170 66 L208 90 L208 130 L182 114 L182 340 L154 340 L154 204 L132 218 Z" fill="#ffffff" />
+            <path d="M214 160 L262 190 L262 246 L236 228 L236 340 L214 340 Z" fill="#ffffff" />
+            <path d="M274 248 L292 266 L292 340 L274 340 Z" fill="#ffffff" />
+        </svg>
+        <div class="login-title">بوابة المستأجرين</div>
+        <div class="login-sub">شركة سكني للمقاولات — استعلام ذاتي</div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="login-field">
+                <label for="loginUser">👤 اسم المستخدم</label>
+                <select id="loginUser" required>
+                    <option value="">— اختر اسم المستأجر —</option>
+                </select>
+            </div>
+            <div class="login-field">
+                <label for="loginPass">🔒 كلمة المرور</label>
+                <input type="password" id="loginPass" placeholder="أدخل كلمة المرور" required>
+            </div>
+            <button type="submit" class="login-btn">دخول</button>
+            <div class="login-error" id="loginError">⚠️ اسم المستخدم أو كلمة المرور غير صحيحة</div>
+        </form>
+
+        <div class="login-hint">🔒 بياناتك محمية — يُعرض لك حسابك فقط</div>
+    </div>
+</div>
+
+<!-- ===== صفحة المستأجر ===== -->
+<div class="tenant-app" id="tenantApp">
+    <div class="app-header">
+        <div class="brand">
+            <svg viewBox="60 60 250 300" xmlns="http://www.w3.org/2000/svg">
+                <path d="M70 260 L118 230 L118 340 L70 340 Z" fill="#fbbf24" />
+                <path d="M132 90 L170 66 L208 90 L208 130 L182 114 L182 340 L154 340 L154 204 L132 218 Z" fill="#fbbf24" />
+                <path d="M214 160 L262 190 L262 246 L236 228 L236 340 L214 340 Z" fill="#fbbf24" />
+                <path d="M274 248 L292 266 L292 340 L274 340 Z" fill="#fbbf24" />
+            </svg>
+            <div class="brand-text">سكني — بوابة المستأجر</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> خروج
+        </button>
+    </div>
+
+    <div class="app-content">
+        <div class="welcome-card">
+            <div>
+                <div class="greet-name" id="greetName">—</div>
+                <div class="greet-unit" id="greetUnit">—</div>
+            </div>
+            <div id="greetStatus"></div>
+        </div>
+
+        <div class="summary-grid" id="summaryGrid"></div>
+
+        <!-- بيانات الإيجار -->
+        <div class="section-card">
+            <div class="section-head" onclick="toggleSec('secRent')">
+                <div class="sec-title"><span>📋</span> بيانات الإيجار</div>
+                <span class="sec-arrow open" id="arrow-secRent">▾</span>
+            </div>
+            <div class="section-body open" id="secRent">
+                <div class="info-grid" id="rentInfo"></div>
+            </div>
+        </div>
+
+        <!-- المستحقات / المتأخرات -->
+        <div class="section-card">
+            <div class="section-head" onclick="toggleSec('secOverdue')">
+                <div class="sec-title"><span>⚠️</span> المستحقات والمتأخرات</div>
+                <span class="sec-arrow open" id="arrow-secOverdue">▾</span>
+            </div>
+            <div class="section-body open" id="secOverdue">
+                <div id="overdueContent"></div>
+            </div>
+        </div>
+
+        <!-- سجل الدفعات -->
+        <div class="section-card">
+            <div class="section-head" onclick="toggleSec('secPayments')">
+                <div class="sec-title"><span>💳</span> سجل الدفعات المسددة</div>
+                <span class="sec-arrow open" id="arrow-secPayments">▾</span>
+            </div>
+            <div class="section-body open" id="secPayments">
+                <div id="paymentsContent"></div>
+            </div>
+        </div>
+
+        <div class="foot-note">© شركة سكني للمقاولات — نظام الاستعلام الذاتي</div>
+    </div>
+</div>
+
+<script>
+/* ================================================================
+   قاعدة البيانات — مطابقة تمامًا لهيكل البرنامج القديم
+   ================================================================ */
+
+/* جدول المستأجرين — نفس ترتيب الحقول الأصلي:
+   [ building, unit, tenantName, rent, status, dueDate, overdueAmount,
+     startDate, requiredMonths, amountDue, amountPaid ] */
+let tenants = [
+    ["ع.2", "ع2 / 1", "عبدالرحمن علي محمد قاسم", 1080, "paid", "2026-07-01", 0, "2025-07-01", 12, 12960, 13500],
+    ["ع.2", "ع2 / 2", "محمد علي محمد قاسم", 1400, "paid", "2026-06-14", 0, "2025-03-14", 15, 18750, 21000],
+    ["ع43", "ع43 / 311", "باسل عبدالحليم عبدالرحيم امين محمد نعيم", 750, "late", "2026-12-05", 125, "2025-09-01", 12, 9000, 8875],
+    ["ع43", "ع43 / 105", "صالح سالم عمر باحاصل", 900, "paid", "2026-12-01", 0, "2025-11-01", 12, 10800, 10800],
+    ["سلطانة", "سلطانة / 312", "محمد جودة علي حسن", 450, "paid", "2026-12-01", 0, "2026-01-01", 12, 5400, 5400],
+    ["سلطانة", "سلطانة / 310", "محمد حنيف حسين بودلي", 650, "paid", "2026-12-10", 0, "2026-01-10", 12, 7800, 7800],
+    ["سلطانة", "سلطانة / 108", "محمد محمود أحمد نعمه الله", 750, "paid", "2026-12-01", 0, "2025-12-01", 12, 9000, 9000],
+    ["ع93", "ع93 / 6", "حمزة طارق عبدالمالك", 1250, "paid", "2026-12-08", 0, "2025-12-08", 12, 15000, 16250],
+    ["ع84", "ع84 / 1", "محمد إبراهيم شريف حسن", 1000, "late", "2026-12-01", 700, "2025-05-01", 18, 18000, 17300],
+    ["ع80", "ع80 / 5", "سعود عبدالرحمن ماطر الحربي", 2000, "late", "2026-12-08", 8372, "2025-01-08", 24, 48000, 39628],
+    ["ع30", "ع30 / 2", "شكري فيصل محمد", 1250, "late", "2026-11-15", 1250, "2025-06-15", 18, 22500, 21250],
+    ["ع30", "ع30 / 3", "حذيفة علي عبدالله الشيخ", 1833, "late", "2027-03-20", 16875, "2025-09-20", 24, 43992, 27117],
+    ["تجاري", "تجاري / 305 | الصيدلية", "فايز عبدالله الأحمدي", 5992, "late", "2027-02-01", 35950, "2025-11-01", 24, 143808, 107858],
+    ["ع2", "ع2 / 6", "عبدالرحمن امين عبدالله الحميري", 1667, "late", "2026-07-01", 168, "2025-07-01", 12, 20004, 19836],
+    ["ع2", "ع2 / 3", "مجيب علي ماهيسار", 550, "paid", "2026-12-10", 0, "2026-01-10", 12, 6600, 6600]
+];
+
+/* جدول الدفعات — نفس حقول recentPaymentsTable الأصلي:
+   { id, date, tenantName, apartment, amount, type, description,
+     monthlyRent, overdueAfter, tillDate } */
+let recentPaymentsTable = [
+    { id: 1,  date: "2026-07-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر يوليو 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-08-01" },
+    { id: 2,  date: "2026-08-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر أغسطس 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-09-01" },
+    { id: 3,  date: "2026-09-01", tenantName: "عبدالرحمن علي محمد قاسم",  apartment: "ع2 / 1", amount: 1080, type: "تحويل بنكي", description: "دفعة إيجار شهر سبتمبر 2026", monthlyRent: 1080, overdueAfter: 0, tillDate: "2026-10-01" },
+    { id: 4,  date: "2026-05-14", tenantName: "محمد علي محمد قاسم",       apartment: "ع2 / 2", amount: 1400, type: "منصة إيجار", description: "دفعة إيجار مايو 2026", monthlyRent: 1400, overdueAfter: 0, tillDate: "2026-06-14" },
+    { id: 5,  date: "2026-06-14", tenantName: "محمد علي محمد قاسم",       apartment: "ع2 / 2", amount: 1400, type: "منصة إيجار", description: "دفعة إيجار يونيو 2026", monthlyRent: 1400, overdueAfter: 0, tillDate: "2026-07-14" },
+    { id: 6,  date: "2026-11-10", tenantName: "باسل عبدالحليم عبدالرحيم امين محمد نعيم", apartment: "ع43 / 311", amount: 750, type: "منصة إيجار", description: "باسل عبدالحليم عبدالرحيم محمدنعيم | 10595282180 | رقم الفاتورة: 2609175825041 | في: 2026-11-10 | مبلغ 750 SAR", monthlyRent: 750, overdueAfter: 125, tillDate: "2026-12-05" },
+    { id: 7,  date: "2026-11-10", tenantName: "صالح سالم عمر باحاصل",      apartment: "ع43 / 105", amount: 900, type: "منصة إيجار", description: "صالح سالم عمر باحاصل | 10629716526 | رقم الفاتورة: 2604090129470 | في: 2026-11-10 | مبلغ 900 SAR", monthlyRent: 900, overdueAfter: 0, tillDate: "2026-12-01" },
+    { id: 8,  date: "2026-11-11", tenantName: "محمد جودة علي حسن",         apartment: "سلطانة / 312", amount: 450, type: "تحويل بنكي", description: "حوالة داخلية واردة بـSR 450 | لـ1004 | من0467;محمد حسن | 26/11/11 20:35", monthlyRent: 450, overdueAfter: 0, tillDate: "2026-12-01" },
+    { id: 9,  date: "2026-11-10", tenantName: "محمد حنيف حسين بودلي",      apartment: "سلطانة / 310", amount: 650, type: "منصة إيجار", description: "MOHAMMED HANIF HUSAIN BODLE | 10959633053 | رقم الفاتورة: 2607135691444 | في: 2026-11-10 | مبلغ 650 SAR", monthlyRent: 650, overdueAfter: 0, tillDate: "2026-12-10" },
+    { id: 10, date: "2026-11-10", tenantName: "محمد محمود أحمد نعمه الله", apartment: "سلطانة / 108", amount: 750, type: "تحويل بنكي", description: "حوالة داخلية واردة بـSR 750 | لـ1004 | من7012;عبد العظيم الواحد | 26/11/10 16:20", monthlyRent: 750, overdueAfter: 0, tillDate: "2026-12-01" },
+    { id: 11, date: "2026-11-09", tenantName: "حمزة طارق عبدالمالك",       apartment: "ع93 / 6", amount: 2000, type: "منصة إيجار", description: "حمزه طارق عبدالمالك | 10057845484 | رقم الفاتورة: 2512073573133 | في: 2026-11-09 | مبلغ 2000 SAR", monthlyRent: 1250, overdueAfter: -1250, tillDate: "2026-12-08" },
+    { id: 12, date: "2026-11-09", tenantName: "محمد إبراهيم شريف حسن",     apartment: "ع84 / 1", amount: 1000, type: "منصة إيجار", description: "محمد ابراهيم شريف حسن | 10233838889 | رقم الفاتورة: 2606263650944 | في: 2026-11-09 | مبلغ 1000 SAR", monthlyRent: 1000, overdueAfter: 700, tillDate: "2026-12-01" },
+    { id: 13, date: "2026-11-09", tenantName: "سعود عبدالرحمن ماطر الحربي", apartment: "ع80 / 5", amount: 50, type: "تحويل بنكي", description: "حوالة داخلية | مبلغ:SR 50 | الى:0308 | من:تنفيذ قضائى: 401014804604141 | 26/11/5 09:34", monthlyRent: 2000, overdueAfter: 8372, tillDate: "2026-12-08" },
+    { id: 14, date: "2026-11-09", tenantName: "مجيب علي ماهيسار",          apartment: "ع2 / 3", amount: 550, type: "تحويل بنكي", description: "حوالة داخلية واردة بـSR 550 | لـ1004 | من3513;سيد محمد نعيمي | 26/11/5 12:11", monthlyRent: 550, overdueAfter: 0, tillDate: "2026-12-10" },
+    { id: 15, date: "2026-10-15", tenantName: "شكري فيصل محمد",            apartment: "ع30 / 2", amount: 1250, type: "منصة إيجار", description: "دفعة إيجار أكتوبر 2026", monthlyRent: 1250, overdueAfter: 1250, tillDate: "2026-11-15" },
+    { id: 16, date: "2026-09-20", tenantName: "حذيفة علي عبدالله الشيخ",   apartment: "ع30 / 3", amount: 11000, type: "تحويل بنكي", description: "دفعة نصف سنوية — الدفعة الأولى", monthlyRent: 1833, overdueAfter: 16875, tillDate: "2027-03-20" },
+    { id: 17, date: "2026-11-10", tenantName: "فايز عبدالله الأحمدي",       apartment: "تجاري / 305 | الصيدلية", amount: 7200, type: "تحويل بنكي", description: "حوالة داخلية واردة بـSR 7200 | لـ1812 | من1105;صيدلية الاسراء الثانية للأدوية | 26/11/10 22:52", monthlyRent: 5992, overdueAfter: 35950, tillDate: "2027-02-01" },
+    { id: 18, date: "2026-06-01", tenantName: "عبدالرحمن امين عبدالله الحميري", apartment: "ع2 / 6", amount: 1667, type: "تحويل بنكي", description: "دفعة إيجار يونيو 2026", monthlyRent: 1667, overdueAfter: 168, tillDate: "2026-07-01" }
+];
+
+/* تحويل جدول tenants إلى كائنات (بنفس أسماء الحقول الأصلية) */
+let tenantsObjects = tenants.map((t, i) => ({
+    id: i,
+    building: t[0],
+    unit: t[1],
+    tenant: t[2],
+    rent: t[3],
+    status: t[4],
+    dueDate: t[5],
+    overdueAmount: t[6],
+    startDate: t[7],
+    requiredMonths: t[8],
+    amountDue: t[9],
+    amountPaid: t[10]
+}));
+
+let currentTenant = null;
+
+/* ================================================================
+   تعبئة قائمة الدخول
+   ================================================================ */
+function populateLoginDropdown() {
+    const sel = document.getElementById('loginUser');
+    tenantsObjects
+        .map(t => t.tenant)
+        .sort((a, b) => a.localeCompare(b, 'ar'))
+        .forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            sel.appendChild(opt);
+        });
+}
+
+/* ================================================================
+   تسجيل الدخول / الخروج
+   ================================================================ */
+function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginError');
+
+    if (!user || pass !== '123') { err.classList.add('show'); return; }
+    const found = tenantsObjects.find(t => t.tenant === user);
+    if (!found) { err.classList.add('show'); return; }
+
+    err.classList.remove('show');
+    currentTenant = found;
+    showTenantPage(found);
+}
+
+function handleLogout() {
+    currentTenant = null;
+    document.getElementById('tenantApp').classList.remove('show');
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginForm').reset();
+    document.getElementById('loginError').classList.remove('show');
+}
+
+/* ================================================================
+   عرض صفحة المستأجر
+   ================================================================ */
+function showTenantPage(t) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('tenantApp').classList.add('show');
+
+    /* ترحيب */
+    document.getElementById('greetName').textContent = '👋 مرحبًا، ' + t.tenant;
+    document.getElementById('greetUnit').textContent = '🏠 ' + t.building + ' — وحدة ' + t.unit;
+
+    /* حالة الحساب */
+    const statusMap = {
+        paid:    { text: '✅ منتظم',        cls: 'paid' },
+        pending: { text: '⏳ قيد الانتظار', cls: 'pending' },
+        late:    { text: '⚠️ متأخر',        cls: 'late' }
+    };
+    const st = statusMap[t.status] || statusMap.pending;
+    document.getElementById('greetStatus').innerHTML =
+        `<span class="status-pill ${st.cls}">${st.text}</span>`;
+
+    /* ملخص مالي */
+    const remaining = Math.max(t.amountDue - t.amountPaid, 0);
+    document.getElementById('summaryGrid').innerHTML = `
+        <div class="summary-card s-due">
+            <div class="sum-label">إجمالي المستحق</div>
+            <div class="sum-value blue">${t.amountDue.toLocaleString()}</div>
+            <div class="sum-sub">ريال</div>
+        </div>
+        <div class="summary-card s-paid">
+            <div class="sum-label">إجمالي المسدد</div>
+            <div class="sum-value green">${t.amountPaid.toLocaleString()}</div>
+            <div class="sum-sub">ريال</div>
+        </div>
+        <div class="summary-card s-remaining">
+            <div class="sum-label">المتبقي عليه</div>
+            <div class="sum-value red">${remaining.toLocaleString()}</div>
+            <div class="sum-sub">ريال</div>
+        </div>
+    `;
+
+    /* بيانات الإيجار — كل الحقول من جدول tenants فقط */
+    document.getElementById('rentInfo').innerHTML = `
+        <div class="info-item">
+            <span class="info-label">🏢 العمارة</span>
+            <span class="info-value">${escapeHtml(t.building)}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">🚪 رقم الوحدة</span>
+            <span class="info-value">${escapeHtml(t.unit)}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">💵 الإيجار الشهري</span>
+            <span class="info-value gold">${t.rent.toLocaleString()} ر.س</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">📊 عدد الأشهر المطلوبة</span>
+            <span class="info-value blue">${t.requiredMonths} شهر</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">📅 تاريخ بداية الإيجار</span>
+            <span class="info-value">${escapeHtml(t.startDate)}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">📌 تاريخ الاستحقاق الحالي</span>
+            <span class="info-value">${escapeHtml(t.dueDate)}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">💰 إجمالي المستحق</span>
+            <span class="info-value gold">${t.amountDue.toLocaleString()} ر.س</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">✅ إجمالي المسدد</span>
+            <span class="info-value green">${t.amountPaid.toLocaleString()} ر.س</span>
+        </div>
+    `;
+
+    /* المستحقات / المتأخرات */
+    const ov = t.overdueAmount;
+    const ovBox = document.getElementById('overdueContent');
+    if (ov > 0) {
+        ovBox.innerHTML = `
+            <div class="overdue-box">
+                <div class="ov-left">
+                    <div class="ov-label">⚠️ المبلغ المتأخر</div>
+                    <div class="ov-value red">${ov.toLocaleString()} ر.س</div>
+                </div>
+                <div class="ov-right">
+                    مستحق حتى تاريخ<br>
+                    <span class="ov-date">${escapeHtml(t.dueDate)}</span>
+                </div>
+            </div>
+        `;
+    } else {
+        ovBox.innerHTML = `
+            <div class="overdue-box clear">
+                <div class="ov-left">
+                    <div class="ov-label">✅ لا توجد متأخرات</div>
+                    <div class="ov-value green">٠ ر.س</div>
+                </div>
+                <div class="ov-right">
+                    حسابك منتظم<br>
+                    <span class="ov-date">${escapeHtml(t.dueDate)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    /* سجل الدفعات — من recentPaymentsTable (ربط بالاسم الكامل) */
+    const pays = recentPaymentsTable
+        .filter(tr => tr.tenantName === t.tenant)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const payBox = document.getElementById('paymentsContent');
+    if (pays.length === 0) {
+        payBox.innerHTML = `<div class="empty-msg">📭 لا توجد دفعات مسجلة حتى الآن</div>`;
+    } else {
+        payBox.innerHTML = pays.map(tr => {
+            const afterCls = (tr.overdueAfter || 0) > 0 ? 'red'
+                          : (tr.overdueAfter || 0) < 0 ? 'green'
+                          : '';
+            return `
+            <div class="payment-row">
+                <div class="pr-top">
+                    <div class="pr-amount">💰 ${tr.amount.toLocaleString()} ر.س</div>
+                    <div class="pr-type">${escapeHtml(tr.type)}</div>
+                </div>
+                <div class="pr-date">📅 ${escapeHtml(tr.date)}</div>
+                <div class="pr-desc">📝 ${escapeHtml(tr.description)}</div>
+                <div class="payment-extra">
+                    <div class="pe-item">
+                        <span class="pe-label">🏢 الإيجار الشهري</span>
+                        <span class="pe-val">${(tr.monthlyRent || 0).toLocaleString()} ر.س</span>
+                    </div>
+                    <div class="pe-item">
+                        <span class="pe-label">📉 المتبقي بعدها</span>
+                        <span class="pe-val ${afterCls}">${(tr.overdueAfter || 0).toLocaleString()} ر.س</span>
+                    </div>
+                    <div class="pe-item">
+                        <span class="pe-label">📅 حتى تاريخ</span>
+                        <span class="pe-val">${escapeHtml(tr.tillDate || '—')}</span>
+                    </div>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+}
+
+/* ================================================================
+   أدوات
+   ================================================================ */
+function toggleSec(id) {
+    const body = document.getElementById(id);
+    const arrow = document.getElementById('arrow-' + id);
+    if (!body) return;
+    body.classList.toggle('open');
+    if (arrow) arrow.classList.toggle('open');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+
+/* ================================================================
+   التهيئة
+   ================================================================ */
+window.addEventListener('DOMContentLoaded', populateLoginDropdown);
+</script>
+</body>
+</html>
