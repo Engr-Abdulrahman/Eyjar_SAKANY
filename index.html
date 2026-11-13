@@ -289,7 +289,7 @@
     .summary-card .sum-value.red { color: #f87171; }
     .summary-card .sum-sub { font-size: 11px; color: #64748b; font-weight: 700; }
 
-    /* أقسام — الصندوق الخارجي شفاف (بدون بلاطة خلف المحتوى) */
+    /* أقسام */
     .section-card {
         background: transparent;
         border-radius: 0;
@@ -397,6 +397,48 @@
         font-weight: 800;
     }
 
+    /* تنبيه التواصل عبر واتساب */
+    .contact-note {
+        margin-top: 12px;
+        padding: 14px 16px;
+        background: rgba(37, 211, 102, 0.06);
+        border: 1px dashed rgba(37, 211, 102, 0.35);
+        border-radius: 12px;
+        text-align: center;
+    }
+    .contact-note .cn-text {
+        font-size: 13px;
+        font-weight: 700;
+        color: #cbd5e1;
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+    .wa-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #25d366, #1ebe5b);
+        color: #ffffff;
+        border: none;
+        padding: 11px 22px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+        transition: all 0.2s;
+        direction: ltr;
+    }
+    .wa-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    }
+    .wa-btn:active { transform: scale(0.98); }
+    .wa-btn i { font-size: 18px; }
+
     /* سجل الدفعات */
     .payment-row {
         background: #0f121f;
@@ -458,6 +500,7 @@
         .login-card { padding: 26px 20px 22px; }
         .summary-card { padding: 14px 14px; }
         .summary-card .sum-value { font-size: 19px; }
+        .wa-btn { font-size: 14px; padding: 10px 18px; }
     }
 </style>
 </head>
@@ -735,6 +778,14 @@ function showTenantPage(t) {
 
     const ov = t.overdueAmount;
     const ovBox = document.getElementById('overdueContent');
+    const contactNote = `
+        <div class="contact-note">
+            <div class="cn-text">في حال ملاحظة خطأ في البيانات، برجاء التواصل معنا عبر واتساب سكني</div>
+            <a class="wa-btn" href="https://wa.me/9665534850000" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> +9665534850000
+            </a>
+        </div>
+    `;
     if (ov > 0) {
         ovBox.innerHTML = `
             <div class="overdue-box">
@@ -747,6 +798,7 @@ function showTenantPage(t) {
                     <span class="ov-date">${escapeHtml(t.dueDate)}</span>
                 </div>
             </div>
+            ${contactNote}
         `;
     } else {
         ovBox.innerHTML = `
@@ -760,6 +812,7 @@ function showTenantPage(t) {
                     <span class="ov-date">${escapeHtml(t.dueDate)}</span>
                 </div>
             </div>
+            ${contactNote}
         `;
     }
 
